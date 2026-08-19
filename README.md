@@ -62,12 +62,6 @@ Final_LSTM_Aligned/   # LSTM 对齐后的特征及权重
 pip install numpy tensorflow torch transformers tqdm matplotlib keras
 ```
 
-为保证结果可复现，建议根据实际运行环境生成带版本号的依赖文件：
-
-```bash
-pip freeze > requirements.txt
-```
-
 TensorFlow、PyTorch 与 CUDA 的版本必须相互兼容，具体安装方式请参考各框架官方文档。
 
 ## 数据准备
