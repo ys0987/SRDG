@@ -72,12 +72,8 @@ TensorFlow、PyTorch 与 CUDA 的版本必须相互兼容，具体安装方式�
 
 ## 数据准备
 
-
 ```
-
 每个 `.pkl` 文件应包含一个形状为 `[样本数, 3072]` 的 NumPy 数组或可转换为该形状的数组。代码默认包含 5 个类别，即 `C0` 至 `C4`。
-
-请勿提交无公开授权的数据。大规模数据建议存放在 Git LFS、Zenodo、Figshare 或其他数据托管平台，并在 README 中提供下载链接及校验值。
 
 ## 本地模型准备
 
@@ -90,9 +86,6 @@ vicuna-7b-v1.5/
 |-- tokenizer.model
 `-- model-*.safetensors
 ```
-
-模型文件体积较大，不应直接提交到 GitHub。请根据模型发布方的许可证自行获取模型，并确保使用方式符合其许可要求。如模型位于其他位置，请修改 `llm.py` 中的 `MODEL_DIR`。
-
 ## 运行步骤
 
 所有命令都应在项目根目录执行。
@@ -125,8 +118,6 @@ python encoder_AE.py
 python llm.py
 ```
 
-该步骤需要较多显存。输出的 128 维特征、适配器权重和自编码器权重会保存到 `Outputs_128/`。
-
 ### 4. 训练 LSTM 对齐网络
 
 在 `lstm.py` 中设置 `TARGET_RPM`，确认 `Results/ae_model/` 与 `Outputs_128/` 中已包含该转速下 `C0` 至 `C4` 的训练数据，然后运行：
@@ -134,8 +125,6 @@ python llm.py
 ```bash
 python lstm.py
 ```
-
-对齐后的训练和测试特征会保存到 `Final_LSTM_Aligned/`。
 
 ### 5. 运行 Deep CORAL 分类
 
@@ -145,48 +134,6 @@ python lstm.py
 python DEEPcoral.py
 ```
 
-默认配置使用 1500 RPM 和 2000 RPM 作为源域、2500 RPM 作为目标域。
+使用两个作为源域、一个作为目标域。
 
-## 可复现性
 
-`DEEPcoral.py` 默认使用随机种子 `42`。其他脚本尚未统一固定 Python、NumPy、TensorFlow 和 PyTorch 的随机种子，因此不同运行之间的结果可能存在差异。正式发布实验结果前，建议统一随机种子并记录以下信息：
-
-- Python、TensorFlow、PyTorch 和 CUDA 版本；
-- GPU 型号和显存；
-- 每个转速、类别的样本数量；
-- 数据划分方式；
-- 所有超参数与随机种子；
-- 多次独立实验的均值和标准差。
-
-```gitignore
-.idea/
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-
-vicuna-7b-v1.5/
-ae_results_per_speed/
-Results/
-Outputs_128/
-Final_LSTM_Aligned/
-
-*.ckpt*
-*.h5
-*.pth
-*.pt
-*.safetensors
-```
-
-## 引用
-
-如果本项目用于论文，请在代码公开后补充论文引用信息：
-
-```bibtex
-@article{your_reference,
-  title   = {Your Paper Title},
-  author  = {Your Name},
-  journal = {Journal Name},
-  year    = {Year}
-}
-```
